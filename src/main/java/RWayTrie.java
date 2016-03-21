@@ -1,29 +1,54 @@
 /**
  * Created by Artem_Lomako on 3/18/2016.
  */
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+/**
+ * Class RWayTrie is the implementation of Trie interface that represents
+ * RWayTrie structure. This data structure supporting String keys, for fast
+ * retrieval of values associated with string keys. In comparison to a Map, has
+ * additional (fast) functions like list of keys with prefix and listing all
+ * keys in sorted order.
+ *
+ * @author Artem Lomako
+ * @version %I%, %G%
+ * @since 1.0
+ */
 public class RWayTrie implements Trie {
 
+    // Size of english alphabet
     private static final int ALPHABET_SIZE = 26;
 
+    // First symbol of english alphabet
     private static final char ALPHABET_SHIFT = 'a';
 
+    // root of trie
     private Node root;
 
+    // R-way trie node
     private int size;
+
+    /**
+     * Static nested class to depict the idea of a Trie Node
+     */
 
     private static class Node {
         private int weight;
         private final Node[] next = new Node[ALPHABET_SIZE];
     }
 
+
+    /**
+     * Constructor
+     */
     public RWayTrie() {
 
     }
+
 
     @Override
     public void add(Tuple tuple) {
@@ -36,6 +61,17 @@ public class RWayTrie implements Trie {
             root = add(root, tuple.getWord(), tuple.getWeight(), 0);
         }
     }
+
+    /**
+     * Method that add key-value to the trie. This is recursive method that
+     * build sequence of nodes that has linked between each other
+     *
+     * @param x      node that contain pointer to next node and some value (may be null)
+     * @param key    word that need to add into trie
+     * @param weight value of current word
+     * @param d      d symbol of key
+     * @return last added node
+     */
 
     private Node add(Node x, String key, int weight, int d) {
         if (x == null) {
@@ -53,6 +89,12 @@ public class RWayTrie implements Trie {
         return x;
     }
 
+    /**
+     * Method that retrieve value of word
+     *
+     * @param word key to retrieve the some value of word
+     * @return value of word
+     */
     public int get(String word) {
         Node x = get(root, word, 0);
         if (x == null) {
@@ -61,11 +103,26 @@ public class RWayTrie implements Trie {
         return x.weight;
     }
 
+    /**
+     * Does this symbol table contain the given word?
+     *
+     * @param word - required word
+     * @return <tt>true</tt> if this symbol table contains <tt>word</tt> and
+     * <tt>false</tt> otherwise
+     */
     @Override
     public boolean contains(String word) {
         return get(word) != 0;
     }
 
+    /**
+     * Method that retrieve value of word
+     *
+     * @param x    node that contain pointer to next node and some value (may be null)
+     * @param word word that need to add into trie
+     * @param d    d symbol of key
+     * @return last added node
+     */
     private Node get(Node x, String word, int d) {
         if (x == null || word == null) {
             return null;
@@ -77,6 +134,7 @@ public class RWayTrie implements Trie {
         return get(x.next[c], word, d + 1);
     }
 
+
     @Override
     public boolean delete(String key) {
         if (key == null) {
@@ -86,6 +144,14 @@ public class RWayTrie implements Trie {
         return root != null;
     }
 
+    /**
+     * Method that delete some word from RWayTrie
+     *
+     * @param x   node that contain pointer to next node and some value (may be null)
+     * @param key word that need to add into trie
+     * @param d   d symbol of key
+     * @return last node
+     */
     private Node delete(Node x, String key, int d) {
         if (x == null) {
             return null;
@@ -111,12 +177,25 @@ public class RWayTrie implements Trie {
         return null;
     }
 
-
+    /**
+     * Returns all words in the symbol table as an <tt>Iterable</tt>. To iterate
+     * over all of the keys in the symbol table named <tt>st</tt>, use the
+     * foreach notation: <tt>for (Key key : st.keys())</tt>.
+     *
+     * @return all keys in the sybol table as an <tt>Iterable</tt>
+     */
     @Override
     public Iterable<String> words() {
         return wordsWithPrefix("");
     }
 
+
+    /**
+     * Returns iterator for trie that made BFS
+     *
+     * @param pref the prefix
+     * @return iterator for trie that made BFS
+     */
     @Override
     public Iterable<String> wordsWithPrefix(String pref) {
         return () -> new Iterator<String>() {
@@ -155,6 +234,12 @@ public class RWayTrie implements Trie {
             }
         };
     }
+
+    /**
+     * Get size of trie
+     *
+     * @return size of trie
+     */
 
     @Override
     public int size() {
