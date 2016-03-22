@@ -21,36 +21,37 @@ public class PrefixMatchesTest {
 
     @InjectMocks
     PrefixMatches test;
-    @Test
-    public void testSize() {
-        test.size();
-        verify(trie).size();
-    }
 
-
-    @Test
-    public void testAdd() {
-        test.add("test");
-        verify(trie).contains("test");
-    }
-
-    @Test
-    public void testContains() {
-        test.contains("test");
-        verify(trie).contains("test");
-    }
-
-    @Test
-    public void testDelete() {
-        test.delete("test");
-        verify(trie).delete("test");
-    }
 
 
     @Test
     public void testAdd_VerifyAdd() {
         test.add("test");
         verify(trie).add(any(Tuple.class));
+    }
+    @Test
+    public void prefixMatchesShoudInvokeTrieContainsMethodOnce() {
+        test.contains("test");
+        verify(trie, times(1)).contains(any(String.class));
+    }
+
+    @Test
+    public void prefixMatchesShouldInvokeTrieDeleteMethodOnceTime() {
+        test.delete("test");
+        verify(trie, times(1)).delete("test");
+    }
+
+    @Test
+    public void prefixMatchesShouldInvokeTrieSizeMethodOnceTime() {
+       test.size();
+        verify(trie, times(1)).size();
+    }
+
+
+    @Test
+    public void prefixMatchesShouldInvokeTrieAddMethod5Times() {
+        test.add("test test test test test");
+        verify(trie, times(5)).add(any(Tuple.class));
     }
 
 
